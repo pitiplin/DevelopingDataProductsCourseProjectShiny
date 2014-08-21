@@ -1,5 +1,6 @@
 library(shiny)
 library(faraway)
+require(markdown)
 
 data(hprice)
 hprice$time<-hprice$time+1985
