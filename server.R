@@ -1,41 +1,43 @@
 library(shiny)
+library(faraway)
 
-BScatalog <- read.csv("BScatalog.csv")
+data(hprice)
+hprice$time<-hprice$time+1985
 
 shinyServer(
   function(input, output) {
     
-    output$text1 <- renderText({input$magnitude[1]})
-    output$text2 <- renderText({input$magnitude[2]})
+    output$text1 <- renderText({input$year[1]})
+    output$text2 <- renderText({input$year[2]})
     output$text3 <- renderText({
       if (input$radio == 1){
-          "Table"
+        "Table"
       }
       else if(input$radio == 2){
-          "Plot"
+        "Plot"
       }
     })
     output$text4 <- renderText({
-      x<-BScatalog[(BScatalog$Vmag>=input$magnitude[1]&BScatalog$Vmag<=input$magnitude[2]),input$xaxis]
+      x<-hprice[(hprice$time>=input$year[1]&hprice$time<=input$year[2]),input$xaxis]
       mean(x)
     })
     output$text5 <- renderText({
-      x<-BScatalog[(BScatalog$Vmag>=input$magnitude[1]&BScatalog$Vmag<=input$magnitude[2]),input$xaxis]
+      x<-hprice[(hprice$time>=input$year[1]&hprice$time<=input$year[2]),input$xaxis]
       sd(x)
     })
     
     output$mytable = renderDataTable({
-      BScatalog[(BScatalog$Vmag>=input$magnitude[1]&BScatalog$Vmag<=input$magnitude[2]),]
+      hprice[(hprice$time>=input$year[1]&hprice$time<=input$year[2]),]
     })
     
     output$plot <- renderPlot({
-      x<-BScatalog[(BScatalog$Vmag>=input$magnitude[1]&BScatalog$Vmag<=input$magnitude[2]),input$xaxis]
+      x<-hprice[(hprice$time>=input$year[1]&hprice$time<=input$year[2]),input$xaxis]
       
       if(input$yaxis=="NONE"){
         hist(x, xlab=input$xaxis, col='lightblue',main='Histogram')        
       }
       else{
-        y<-BScatalog[(BScatalog$Vmag>=input$magnitude[1]&BScatalog$Vmag<=input$magnitude[2]),input$yaxis]
+        y<-hprice[(hprice$time>=input$year[1]&hprice$time<=input$year[2]),input$yaxis]
         plot(x,y, xlab=input$xaxis, ylab=input$yaxis, col='lightblue')
         abline(lm(y~x), col='red')
       }      
